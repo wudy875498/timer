@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: timer
+  cloud:
+    config:
+      uri: http://localhost:9999
+      username: root
+      password: root
+      fail-fast: true
+task:
+  pool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    keepAliveSeconds: 60
+    queueCapacity: 100
+    threadNamePrefix: myThreadPool
+---
+spring:
+  profiles:
+    active: local
