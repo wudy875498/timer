@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: timer
+  redis:
+    host: 127.0.0.1
+    password: 123456
+    port: 6379
+    database: 15
+  rabbitmq:
+    host: 127.0.0.1
+    username: admin
+    password: admin
+    virtual-host: /
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      authentication-database: common
+      database: common
+      username: test
+      password: test123
+task:
+  pool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    keepAliveSeconds: 60
+    queueCapacity: 100
+    threadNamePrefix: myThreadPool
+server:
+  port: 8080

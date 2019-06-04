@@ -7,9 +7,6 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -158,59 +155,6 @@ public class BeanRefUtils {
         } catch (Exception e) {
             log.error("类型转换异常", e);
         }
-    }
-
-    /**
-     * <p class="detail">
-     * 功能：根据Bean对象，转成xml格式。
-     * 可以指定根元素名称，其他节点名称即为bean的属性名称。
-     * </p>
-     *
-     * @param obj             要转换的bean对象
-     * @param rootElementName XML根元素名称，默认“xml”
-     * @param parameterMap
-     * @param skipAttrs
-     * @return Document
-     * @author liuwh
-     */
-    public static Document toXml(Object obj, String rootElementName, Map<String, Object> parameterMap, String... skipAttrs) {
-        if (StringUtils.isBlank(rootElementName)) {
-            rootElementName = "xml";
-        }
-        List<String> skipList = new ArrayList<>();
-        if (skipAttrs != null && skipAttrs.length > 0) {
-            skipList.addAll(Arrays.asList(skipAttrs));
-        }
-        Element rootElement = DocumentHelper.createElement(rootElementName);
-        Document document = DocumentHelper.createDocument(rootElement);
-        Class<?> clz = obj.getClass();
-        Method[] methods = clz.getMethods();
-        for (Method method : methods) {
-            String methodName = method.getName();
-            //继承了Object的getClass方法，要过滤掉
-            if (StringUtils.isNoneBlank(methodName) && methodName.startsWith("get") && !"getClass".equals(methodName)) {
-                try {
-                    //调用Bean的get方法，得到属性值
-                    Object value = method.invoke(obj);
-                    if (value != null) {
-                        String key = methodName.substring(3);
-                        key = key.substring(0, 1).toLowerCase() + key.substring(1);
-                        if (skipList.contains(key)) {
-                            continue;
-                        }
-                        if (parameterMap != null && parameterMap.get(key) != null) {
-                            key = parameterMap.get(key).toString();
-                        }
-                        Element element = DocumentHelper.createElement(key);
-                        element.setText(value.toString());
-                        rootElement.add(element);
-                    }
-                } catch (Exception e) {
-                    log.error("Convert Bean to XML occur exception:{}", e);
-                }
-            }
-        }
-        return document;
     }
 
 }

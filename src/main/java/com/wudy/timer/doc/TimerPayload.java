@@ -55,8 +55,11 @@ public class TimerPayload implements Serializable {
      * rabbitmq的路由
      */
     private String routingKey;
+
+    private boolean jsonBody;
+
     /**
      * 额外参数，业务参数
      */
-    private Map<String,Object> params;
+    private Map<String,String> params;
 }

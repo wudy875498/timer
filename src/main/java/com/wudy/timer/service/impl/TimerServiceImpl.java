@@ -3,6 +3,7 @@ package com.wudy.timer.service.impl;
 import com.wudy.timer.doc.TimerPayload;
 import com.wudy.timer.helper.RedisHelper;
 import com.wudy.timer.mq.sender.RedisExpireKeySender;
+import com.wudy.timer.service.TaskService;
 import com.wudy.timer.service.TimerService;
 import com.wudy.timer.utils.DateUtils;
 import com.wudy.timer.vo.ResponseObj;
@@ -15,7 +16,7 @@ public class TimerServiceImpl implements TimerService {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private RedisExpireKeySender redisExpireKeySender;
+    private TaskService taskService;
     @Autowired
     private RedisHelper redisHelper;
     /**
@@ -29,7 +30,7 @@ public class TimerServiceImpl implements TimerService {
         mongoTemplate.insert(timerPayload);
         //立即执行
         if (0 == timerPayload.getTimes()) {
-            redisExpireKeySender.send(timerPayload);
+            taskService.doTask(timerPayload.getTaskId());
         } else { //执行一次以上
             long seconds = timerPayload.getSeconds()==null?DateUtils.seconds(timerPayload.getCron()):timerPayload.getSeconds();
             redisHelper.set(timerPayload.getTaskId(),timerPayload.getTaskName(),seconds);
